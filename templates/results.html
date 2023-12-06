@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../style.css">
     <title>Search Results</title>
     <style>
         body {
@@ -30,15 +31,29 @@
     </style>
 </head>
 <body>
-    <h1>You may like...</h1>
+    {% if results|length == 0 %}
+        <h1>No results found</h1>
+    {% elif query_type == 'All'%}
+        <h1> All Wine</h1>
+    {% else %}
+        <h1>You may like...</h1>
+    {% endif %}
+
     {% for result in results %}
-        <div class="card">
-            <!-- <li>{{ result._source }}</li> -->
-            <h2>{{ result._source.variety }} - {{ result._source.title }}</h2>
-            <p><strong>Taster said: </strong>"{{ result._source.description }}"</p>
-            <p><strong>Country:</strong> {{ result._source.country }}</p>
-            <p><strong>Winery:</strong> {{ result._source.winery }}</p>
-        </div>
-    {% endfor %}
+    <div class="card">
+        <!-- <div class="header">
+            <p><strong>Price:</strong> {{ result._source.price }}</p>
+            <p><strong>Points:</strong> {{ result._source.points }}</p>
+        </div> -->
+        <h2>{{ result._source.variety }}</h2>
+        <p><strong>Taster said: </strong>"{{ result._source.description }}"</p>
+        <p><strong>Country:</strong> {{ result._source.country }}</p>
+        <p><strong>Winery:</strong> {{ result._source.winery }}</p>
+        <p><strong>Province:</strong> {{ result._source.province }}</p>
+        <p><strong>Region:</strong> {{ result._source.region_1 }}</p>
+        
+    </div>
+{% endfor %}
+
 </body>
 </html>

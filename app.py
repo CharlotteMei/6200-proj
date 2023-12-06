@@ -30,6 +30,20 @@ def index():
     
     return render_template('index.html')
 
+@app.route('/findall', methods=['GET'])
+def findall():
+    # Use Elasticsearch to perform the search
+    es_query = {
+        "size": 20,
+        "query": {
+            "match_all": {}
+        }
+    }
+
+    results = es.search(index=doc_index, body=es_query)
+    print("Got result length: ", len(results['hits']['hits']))
+    return render_template('results.html', results=results['hits']['hits'], query_type="All")
+
 @app.route('/search', methods=['POST'])
 def search():
     query = request.form.get('query')
@@ -42,7 +56,6 @@ def search():
                 "queries": [
                     {"match": {"country": query}},
                     {"match": {"description": query}},
-                    {"match": {"designation": query}},
                     {"match": {"province": query}},
                     {"match": {"region_1": query}},
                     {"match": {"variety": query}},
