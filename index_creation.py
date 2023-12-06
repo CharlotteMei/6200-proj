@@ -14,19 +14,30 @@ es = Elasticsearch("http://localhost:9200")  # Replace with your Elasticsearch s
 
 # Define the index mapping
 index_mapping = {
+    "settings": {
+        "analysis": {
+        "normalizer": {
+            "my_normalizer": {
+            "type": "custom",
+            "char_filter": [],
+            "filter": ["lowercase", "asciifolding"]
+            }
+        }
+        }
+    },
     "mappings": {
         "properties": {
             "row_id": {"type": "integer"},
-            "country": {"type": "text"},
-            "description": {"type": "text"},
-            "designation": {"type": "text"},
+            "country": {"type": "keyword", "normalizer": "my_normalizer"},
+            "description": {"type": "text", "analyzer": "standard"},
+            "designation": {"type": "keyword", "normalizer": "my_normalizer"},
             "points": {"type": "integer"},
             "price": {"type": "float"},
-            "province": {"type": "text"},
-            "region_1": {"type": "text"},
-            "region_2": {"type": "text"},
-            "variety": {"type": "text"},
-            "winery": {"type": "text"}
+            "province": {"type": "keyword", "normalizer": "my_normalizer"},
+            "region_1": {"type": "keyword", "normalizer": "my_normalizer"},
+            "region_2": {"type": "keyword", "normalizer": "my_normalizer"},
+            "variety": {"type": "keyword", "normalizer": "my_normalizer"},
+            "winery": {"type": "keyword", "normalizer": "my_normalizer"}
         },
     },
     
@@ -40,7 +51,7 @@ if not es.indices.exists(index=index_name):
 
 # Iterate through each row and insert into Elasticsearch
 count = 0
-for index, row in df.iterrows():
+for index, row in df.head(2000).iterrows():
     # parsed_row = json.loads(row, parse_float=float, parse_int=int, parse_constant=lambda x: x if x != 'NaN' else None)
     document = row.to_dict()
     document = {k: v for k, v in document.items() if v == v}  # Remove NaN values

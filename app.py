@@ -53,18 +53,42 @@ def search():
     es_query = {
         "size": 20,
         "query": {
-            "dis_max": {
-                "queries": [
-                    {"match": {"country": {"query": query, "fuzziness": "AUTO"}}},
-                    {"match": {"province": {"query": query, "fuzziness": "AUTO"}}},
-                    {"match": {"region_1": {"query": query, "fuzziness": "AUTO"}}},
-                    {"match": {"variety": {"query": query, "fuzziness": "AUTO"}}},
-                    {"match": {"description": {"query": query, "fuzziness": "AUTO"}}},
-                ],
-                "tie_breaker": 0.3
+            "bool": {
+                "should": [
+                    {
+                        "dis_max": {
+                            "queries": [
+                                {"match": {"country": {"query": query}}},
+                                {"match": {"region_1": {"query": query}}},
+                                {"match": {"province": {"query": query}}}
+                            ],
+                            "tie_breaker": 0.3,
+                            "boost": 0.8
+                        }
+                    },
+                    {
+                        "dis_max": {
+                            "queries": [
+                                {"match": {"variety": {"query": query}}}
+                            ],
+                            "tie_breaker": 0.3,
+                            "boost": 1.5
+                        }
+                    },
+                    {
+                        "dis_max": {
+                            "queries": [
+                                {"match": {"description": {"query": query, "fuzziness": "AUTO"}}}
+                            ],
+                            "tie_breaker": 0.3,
+                            "boost": 1.0
+                        }
+                    }
+                ]
             }
         }
     }
+
 
 
 
