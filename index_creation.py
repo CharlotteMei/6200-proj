@@ -8,6 +8,9 @@ index_name = 'wine_data'
 
 # Read the CSV file into a Pandas DataFrame
 df = pd.read_csv(csv_file_path)
+df = df.where(pd.notna(df), None)
+df = df.drop_duplicates(subset=['variety', 'country', 'province', 'region_1', 'description'])
+
 
 # Elasticsearch configuration
 es = Elasticsearch("http://localhost:9200")  # Replace with your Elasticsearch server information
@@ -51,7 +54,7 @@ if not es.indices.exists(index=index_name):
 
 # Iterate through each row and insert into Elasticsearch
 count = 0
-for index, row in df.head(2000).iterrows():
+for index, row in df.head(5000).iterrows():
     # parsed_row = json.loads(row, parse_float=float, parse_int=int, parse_constant=lambda x: x if x != 'NaN' else None)
     document = row.to_dict()
     document = {k: v for k, v in document.items() if v == v}  # Remove NaN values
