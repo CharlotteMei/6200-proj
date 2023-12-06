@@ -35,14 +35,6 @@ def search():
     query = request.form.get('query')
     # Use Elasticsearch to perform the search
     print("query: ", query)
-    # es_query = {
-    #     "query": {
-    #         "multi_match": {
-    #             "query": query,
-    #             "fields": ["HEAD", "TEXT"]
-    #         }
-    #     }
-    # }
     es_query = {
         "size": 20,
         "query": {
@@ -53,7 +45,6 @@ def search():
                     {"match": {"designation": query}},
                     {"match": {"province": query}},
                     {"match": {"region_1": query}},
-                    {"match": {"title": query}},
                     {"match": {"variety": query}},
                 ],
                 "tie_breaker": 0.3
@@ -63,6 +54,7 @@ def search():
 
     
     results = es.search(index=doc_index, body=es_query)
+    print("Got result length: ", len(results['hits']['hits']))
     return render_template('results.html', results=results['hits']['hits'])
 
 # ==================== Main ====================

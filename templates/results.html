@@ -5,13 +5,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Search Results</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 20px;
+        }
+
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            background-color: #fff;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        p {
+            color: #666;
+        }
+    </style>
 </head>
 <body>
-    <h1>Search Results</h1>
-    <ul>
-        {% for result in results %}
-            <li>{{ result._source }}</li>
-        {% endfor %}
-    </ul>
+    <h1>You may like...</h1>
+    {% for result in results %}
+        <div class="card">
+            <!-- <li>{{ result._source }}</li> -->
+            <h2>{{ result._source.variety }} - {{ result._source.title }}</h2>
+            <p><strong>Taster said: </strong>"{{ result._source.description }}"</p>
+            <p><strong>Country:</strong> {{ result._source.country }}</p>
+            <p><strong>Winery:</strong> {{ result._source.winery }}</p>
+        </div>
+    {% endfor %}
 </body>
 </html>
