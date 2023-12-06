@@ -6,7 +6,7 @@ import re
 
 app = Flask(__name__)
 es = Elasticsearch("http://localhost:9200")
-doc_index = "doc_index"
+doc_index = "wine_data"
 
 # ==================== Elasticsearch ====================
 
@@ -48,13 +48,20 @@ def search():
         "query": {
             "dis_max": {
                 "queries": [
-                    {"match": {"head": query}},
-                    {"match": {"text": query}}
+                    {"match": {"country": query}},
+                    {"match": {"description": query}},
+                    {"match": {"designation": query}},
+                    {"match": {"province": query}},
+                    {"match": {"region_1": query}},
+                    {"match": {"title": query}},
+                    {"match": {"variety": query}},
                 ],
-            "tie_breaker": 0.3
-        }
+                "tie_breaker": 0.3
             }
+        }
     }
+
+    
     results = es.search(index=doc_index, body=es_query)
     return render_template('results.html', results=results['hits']['hits'])
 
