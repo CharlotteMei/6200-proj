@@ -49,21 +49,24 @@ def search():
     query = request.form.get('query')
     # Use Elasticsearch to perform the search
     print("query: ", query)
+    
     es_query = {
         "size": 20,
         "query": {
             "dis_max": {
                 "queries": [
-                    {"match": {"country": query}},
-                    {"match": {"description": query}},
-                    {"match": {"province": query}},
-                    {"match": {"region_1": query}},
-                    {"match": {"variety": query}},
+                    {"match": {"country": {"query": query, "fuzziness": "AUTO"}}},
+                    {"match": {"province": {"query": query, "fuzziness": "AUTO"}}},
+                    {"match": {"region_1": {"query": query, "fuzziness": "AUTO"}}},
+                    {"match": {"variety": {"query": query, "fuzziness": "AUTO"}}},
+                    {"match": {"description": {"query": query, "fuzziness": "AUTO"}}},
                 ],
                 "tie_breaker": 0.3
             }
         }
     }
+
+
 
     
     results = es.search(index=doc_index, body=es_query)
